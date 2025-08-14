@@ -5,6 +5,15 @@
 {% block body %}
     <h2>Catalogue</h2>
 
+    <section>
+        {%  if page > 1 %}
+            <a href="{{ path('serie_list', {'page' : page -1}) }}">Page précédente</a>&nbsp;
+        {% endif %}
+        {% if page < total_page  %}
+            <a href="{{ path('serie_list', {'page' : page + 1}) }}">Page suivante</a>&nbsp;
+        {% endif %}
+    </section>
+
     <table>
         <tr>
             <th>Id</th>
