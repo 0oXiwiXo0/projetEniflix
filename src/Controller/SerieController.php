@@ -43,10 +43,11 @@ final class SerieController extends AbstractController
         );
 
     }
-    #[Route('/list-custom', name: 'custom_list')]
+    #[Route('/list-custom', name: '_custom_list')]
     public function listCustom(SerieRepository $serieRepository): Response
     {
-        $series = $serieRepository->findSeriesBYCustom(400,8);
+        //$series = $serieRepository->findSeriesCustom(400,8);
+        $series = $serieRepository->findSeriesWithDQL(400,8);
 
         return $this->render('serie/list.html.twig', [
             'series' => $series,
