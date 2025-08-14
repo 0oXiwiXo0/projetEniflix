@@ -1,30 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}ENIFlix - Series list{% endblock %}
+{% block title %}{{ parent() }} - Catalogue{% endblock %}
 
 {% block body %}
-    <h2>Series</h2>
+    <h2>Catalogue</h2>
 
     <table>
         <tr>
             <th>Id</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Vote</th>
-            <th>Popularity</th>
-            <th>First Air Date</th>
-            <th>Last Air Date</th>
+            <th>Nom</th>
+            <th>status</th>
+            <th>genre</th>
+            <th>vote</th>
+            <th>popularity</th>
+            <th>First air date</th>
+            <th>Last air date</th>
+            <th></th>
         </tr>
         {% for serie in series %}
             <tr>
                 <td>{{ serie.id }}</td>
                 <td>{{ serie.name }}</td>
                 <td>{{ serie.status }}</td>
+                <td>{{ serie.genre }}</td>
                 <td>{{ serie.vote }}</td>
                 <td>{{ serie.popularity }}</td>
-                <td>{{ serie.firstAirDate|date('d-m-Y') }}</td>
-                <td>{{ serie.lastAirDate ? serie.lastAirDate|date('d-m-Y') : '' }}</td>
+                <td>{{ serie.firstAirDate|date('d/m/Y') }}</td>
+                <td>{{ serie.lastAirDate ? serie.lastAirDate|date('d/m/Y') : '' }}</td>
+                <td><a href="{{ path('serie_detail', { id: serie.id }) }}">Voir</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td>Pas de données</td>
             </tr>
         {% endfor %}
     </table>
+
 {% endblock %}
