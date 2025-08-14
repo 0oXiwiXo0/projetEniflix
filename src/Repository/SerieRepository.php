@@ -16,6 +16,20 @@ class SerieRepository extends ServiceEntityRepository
         parent::__construct($registry, Serie::class);
     }
 
+    public function findSeriesBYCustom(float $popularity, float $vote): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.popularity > :popularity')
+            ->andWhere('s.vote < :vote')
+            ->orderBy('s.popularity', 'DESC')
+            ->addOrderBy('s.firstAirDate', 'DESC')
+            ->setParameter('popularity', $popularity)
+            ->setParameter('vote', $vote)
+            ->getQuery()
+            ->getResult();
+    }
+
+
     //    /**
     //     * @return Serie[] Returns an array of Serie objects
     //     */
