@@ -1,0 +1,10 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Formulaire{% endblock %}
+
+{% block body %}
+<h1>Editer une série</h1>
+    {{ form(serie_form)  }}
+
+{% endblock %}

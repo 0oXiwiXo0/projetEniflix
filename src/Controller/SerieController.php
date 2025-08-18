@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -52,7 +53,7 @@ final class SerieController extends AbstractController
         return $this->render('serie/list.html.twig', [
             'series' => $series,
             'page' => 1,
-            'totalpages' => 10,
+            'totalpages' => 13,
             ]);
 }
 
@@ -67,6 +68,16 @@ final class SerieController extends AbstractController
 
         return $this->render('serie/detail.html.twig', [
             'serie' => $serie
+        ]);
+    }
+
+    #[Route('/create', name: '_create')]
+    public function create(): Response {
+
+        $form = $this->createForm(SerieType::class);
+
+        return $this->render('serie/edit.html.twig', [
+            'serie_form' => $form,
         ]);
     }
 
