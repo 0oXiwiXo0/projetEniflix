@@ -20,9 +20,24 @@ nav li a {
     color: inherit;
 }
 
-.series-list {
-    dispaly:grid;
-    grid-gap: 2em;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 
+
+.backdrop {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.backdrop-content {
+    max-width: 800px;
+    background: rgba(0, 0, 0, 0.5); /* petit voile noir derrière le texte pour la lisibilité */
+    padding: 2rem;
+    border-radius: 10px;
 }
