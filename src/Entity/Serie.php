@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -15,16 +16,24 @@ class Serie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'Ce champ ne doit pas être vide !!')]
+    #[Assert\Length(min: 2, max: 15,
+        minMessage: 'Au moins {{ limit }} caractères svp !',
+        maxMessage: 'Moins que {{ limit }} caractères svp !'
+    )]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $overview = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Choice(choices: ['returning', 'ended','canceled'],
+        message: 'Ce choix n\'est pas valide')]
     private ?string $status = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Range(notInRangeMessage: 'Les votes doivent  être compris en {{ min }} et {{ max }}', min: 0, max: 10)]
     private ?float $vote = null;
 
     #[ORM\Column(nullable: true)]
@@ -34,9 +43,23 @@ class Serie
     private ?string $genre = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\lessThan('today', message: 'la date de lancement ne doit pas être postérieure à {{ compared_value }}')]
     private ?\DateTime $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\GreaterThan(propertyPath: 'firstAirDate')]
+    #[Assert\When(
+        expression:"this.getStatus() == 'ended' || this.getStatus() == 'Canceled'",
+        constraints: [
+            new Assert\NotBlank(message : 'Vu le statut, il faut une date de fin'),
+        ]
+    )]
+    #[Assert\When(
+        expression:"this.getStatus() == 'returning'",
+        constraints: [
+            new Assert\NotBlank(message : 'Vu le statut, il ne faut pas une date de fin'),
+        ]
+    )]
     private ?\DateTime $lastAirDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
