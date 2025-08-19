@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\UniqueConstraint(columns:['name', 'first_air_date'])]
+#[UniqueEntity(fields: ['name', 'first_air_date'])]
 class Serie
 {
     #[ORM\Id]
@@ -16,9 +19,9 @@ class Serie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Ce champ ne doit pas être vide !!')]
-    #[Assert\Length(min: 2, max: 15,
+    #[Assert\Length(min: 2, max: 255,
         minMessage: 'Au moins {{ limit }} caractères svp !',
         maxMessage: 'Moins que {{ limit }} caractères svp !'
     )]
@@ -43,7 +46,7 @@ class Serie
     private ?string $genre = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\lessThan('today', message: 'la date de lancement ne doit pas être postérieure à {{ compared_value }}')]
+    #[Assert\LessThan('today', message: 'la date de lancement ne doit pas être postérieure à {{ compared_value }}')]
     private ?\DateTime $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
