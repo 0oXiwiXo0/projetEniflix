@@ -26,8 +26,8 @@ class SerieType extends AbstractType
             ])
             ->add('status',ChoiceType::class, [
                 'choices' => [
-                    'En cours' => 'Returning',
-                    'Terminé' => 'Ended',
+                    'En cours' => 'returning',
+                    'Terminé' => 'ended',
                     'Abandonné' => 'Canceled',
                 ],
                 'placeholder' => '-- Choisissez un statut --',

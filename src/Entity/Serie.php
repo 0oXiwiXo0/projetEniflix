@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\UniqueConstraint(columns:['name', 'first_air_date'])]
-#[UniqueEntity(fields: ['name', 'first_air_date'])]
+#[UniqueEntity(fields: ['name', 'firstAirDate'])]
 class Serie
 {
     #[ORM\Id]
@@ -31,7 +31,7 @@ class Serie
     private ?string $overview = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Choice(choices: ['returning', 'ended','canceled'],
+    #[Assert\Choice(choices: ['returning', 'ended','Canceled'],
         message: 'Ce choix n\'est pas valide')]
     private ?string $status = null;
 
@@ -50,7 +50,7 @@ class Serie
     private ?\DateTime $firstAirDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Assert\GreaterThan(propertyPath: 'firstAirDate')]
+    #[Assert\GreaterThan(propertyPath: 'firstAirDate', message: 'Cette date ne peut être antérieur à la création')]
     #[Assert\When(
         expression:"this.getStatus() == 'ended' || this.getStatus() == 'Canceled'",
         constraints: [
