@@ -12,13 +12,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/serie', name: 'serie')]
+#[IsGranted('ROLE_USER')]
 final class SerieController extends AbstractController
 {
 
+
     #[Route('/list/{page}', name: '_list', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
+
     public function list(SerieRepository $serieRepository, int $page, ParameterBagInterface $parameters): Response
     {
         //$series = $serieRepository->findAll();
@@ -51,6 +55,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/liste-custom', name: '_custom_list')]
+
     public function listCustom(SerieRepository $serieRepository): Response
     {
         //$series = $serieRepository->findSeriesCustom(400, 8);
@@ -69,6 +74,7 @@ final class SerieController extends AbstractController
 
 
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
+
     public function detail(Serie $serie): Response
     {
         return $this->render('serie/detail.html.twig', [
@@ -77,6 +83,8 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/create', name: '_create')]
+    #[IsGranted('ROLE_ADMIN')]
+
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, ParameterBagInterface $parameterBag): Response
     {
         $serie = new Serie();
@@ -108,6 +116,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/update/{id}', name: '_update', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function update(
         Serie $serie,
         Request $request,
@@ -146,6 +155,7 @@ final class SerieController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: '_delete', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(Serie $serie, EntityManagerInterface $em, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete'.$serie->getId(), $request->get('token'))) {
