@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Serie;
 use App\Form\SerieType;
+use App\Helper\FileUploader;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -85,7 +86,7 @@ final class SerieController extends AbstractController
     #[Route('/create', name: '_create')]
     #[IsGranted('ROLE_ADMIN')]
 
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, ParameterBagInterface $parameterBag): Response
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, ParameterBagInterface $parameterBag,FileUploader $fileUploader): Response
     {
         $serie = new Serie();
         $form = $this->createForm(SerieType::class, $serie);
@@ -96,10 +97,12 @@ final class SerieController extends AbstractController
 
             $file = $form->get('poster_file')->getData();
             if ($file instanceof UploadedFile) {
-                $name = $slugger->slug($serie->getName()) . '-' . uniqid() . '.' . $file->guessExtension();
-                $dir = $parameterBag->get('serie')['poster_directory'];
-                $file->move($dir, $name);
-                $serie->setPoster($name);
+                $name = $fileUploader->upload(
+                    $file,
+                    $serie->getName(),
+                    $parameterBag->get('serie')['poster_directory'],
+                );
+             $serie->setPoster($name);
             }
 
             $em->persist($serie);
@@ -121,7 +124,7 @@ final class SerieController extends AbstractController
         Serie $serie,
         Request $request,
         EntityManagerInterface $em,
-        SluggerInterface $slugger,
+        FileUploader $fileUploader,
         ParameterBagInterface $parameterBag
     ): Response
     {
@@ -133,9 +136,12 @@ final class SerieController extends AbstractController
 
             $file = $form->get('poster_file')->getData();
             if ($file instanceof UploadedFile) {
-                $name = $slugger->slug($serie->getName()) . '-' . uniqid() . '.' . $file->guessExtension();
                 $dir = $parameterBag->get('serie')['poster_directory'];
-                $file->move($dir, $name);
+                $name = $fileUploader->upload(
+                    $file,
+                    $serie->getName(),
+                    $dir
+                );
                 if ($serie->getPoster() && file_exists($dir . '/' . $serie->getPoster())) {
                     unlink($dir . '/' . $serie->getPoster());
                 }
